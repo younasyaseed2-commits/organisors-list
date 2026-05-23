@@ -7,12 +7,13 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "replace-this-secret-key-in-pro
 
 DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() == "true"
 
-# settings.py ഫയലിൽ ഇത് തിരഞ്ഞ് കണ്ട് പിടിച്ച് മാറ്റുക:
+# Render-ലും ലോക്കലിലും ഒരുപോലെ വർക്ക് ചെയ്യാൻ ഇത് സഹായിക്കും
 ALLOWED_HOSTS = ['*']
+
 CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
-    if origin.strip()
+    "https://organisors-list.onrender.com",
+    "http://127.0.0.1",
+    "http://localhost"
 ]
 
 INSTALLED_APPS = [
@@ -27,7 +28,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware", # സ്റ്റാറ്റിക് ഫയലുകൾക്ക് വേണ്ടി
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -55,11 +56,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "organizer_directory.wsgi.application"
 
+# Neon PostgreSQL ഡാറ്റാബേസ് സെറ്റപ്പ്
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
     import dj_database_url
-
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
@@ -76,18 +77,10 @@ else:
     }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 LANGUAGE_CODE = "en-us"
@@ -95,9 +88,10 @@ TIME_ZONE = "Asia/Kolkata"
 USE_I18N = True
 USE_TZ = True
 
+# Static Files (CSS, Images) സെറ്റപ്പ്
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
