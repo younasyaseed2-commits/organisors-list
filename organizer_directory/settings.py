@@ -7,15 +7,8 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "replace-this-secret-key-in-pro
 
 DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get(
-        "DJANGO_ALLOWED_HOSTS",
-        "127.0.0.1,localhost,.web.app,.firebaseapp.com,.run.app",
-    ).split(",")
-    if host.strip()
-]
-
+# settings.py ഫയലിൽ ഇത് തിരഞ്ഞ് കണ്ട് പിടിച്ച് മാറ്റുക:
+ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
