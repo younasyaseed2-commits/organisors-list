@@ -1,0 +1,50 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Directory Admin Dashboard{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+{% block page_subtitle %}Upload data, approve reception users, and monitor directory totals.{% endblock %}
+
+{% block content %}
+  <div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="stat-card"><span>Locations</span><strong>{{ location_count }}</strong></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Organizers</span><strong>{{ organizer_count }}</strong></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Districts</span><strong>{{ district_count }}</strong></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Pending Users</span><strong>{{ pending_users }}</strong></div></div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="panel panel-pad">
+        <h2 class="h5 fw-bold mb-3">Quick Actions</h2>
+        <div class="d-grid gap-2">
+          <a class="btn btn-accent btn-lg text-start" href="{% url 'custom_admin_data_upload' %}">
+            <i class="bi bi-file-earmark-spreadsheet me-2"></i> Upload Excel / CSV directory data
+          </a>
+          <a class="btn btn-outline-dark btn-lg text-start" href="{% url 'custom_admin_manual_upload' %}">
+            <i class="bi bi-pencil-square me-2"></i> Add organizer and locations manually
+          </a>
+          <a class="btn btn-outline-dark btn-lg text-start" href="{% url 'custom_admin_users' %}">
+            <i class="bi bi-person-check me-2"></i> Approve reception registrations
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="panel panel-pad">
+        <h2 class="h5 fw-bold mb-3">Recent Organizers</h2>
+        {% if recent_organizers %}
+          <div class="list-group list-group-flush">
+            {% for organizer in recent_organizers %}
+              <div class="list-group-item px-0">
+                <strong>{{ organizer.name }}</strong>
+                <div class="text-muted small">{{ organizer.phone_number }} · {{ organizer.district.name }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted mb-0">No organizers added yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

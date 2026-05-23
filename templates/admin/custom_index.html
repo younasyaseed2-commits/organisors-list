@@ -1,0 +1,17 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+  <div class="module" style="padding: 18px; margin-bottom: 18px;">
+    <h2 style="margin-top: 0;">Directory Data Upload</h2>
+    <p>
+      Upload organizers and locations using Excel or CSV, or continue using manual organizer entry with bulk locations.
+    </p>
+    <p>
+      <a href="{% url 'custom_admin_dashboard' %}" class="button" style="padding: 10px 14px;">Open Custom Dashboard</a>
+      <a href="{% url 'custom_admin_data_upload' %}" class="button" style="padding: 10px 14px;">Upload Excel / CSV Data</a>
+      <a href="{% url 'admin:directory_organizer_add' %}" class="button" style="padding: 10px 14px;">Manual Organizer Entry</a>
+      <a href="{% url 'admin:auth_user_changelist' %}?is_active__exact=0" class="button" style="padding: 10px 14px;">Approve Reception Users</a>
+    </p>
+  </div>
+  {{ block.super }}
+{% endblock %}

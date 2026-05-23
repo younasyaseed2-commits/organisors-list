@@ -1,0 +1,42 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Upload Directory Data | {{ site_title|default:"Django site admin" }}{% endblock %}
+
+{% block content %}
+  <div id="content-main">
+    <h1>Upload Directory Data</h1>
+
+    <div class="module" style="padding: 18px; max-width: 900px;">
+      <h2>Excel / CSV Format</h2>
+      <p>Use one of these formats:</p>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
+        <thead>
+          <tr>
+            <th style="text-align: left; border-bottom: 1px solid #ddd; padding: 8px;">district</th>
+            <th style="text-align: left; border-bottom: 1px solid #ddd; padding: 8px;">organizer</th>
+            <th style="text-align: left; border-bottom: 1px solid #ddd; padding: 8px;">phone_number</th>
+            <th style="text-align: left; border-bottom: 1px solid #ddd; padding: 8px;">locations</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 8px;">Kozhikode</td>
+            <td style="padding: 8px;">Ahmed</td>
+            <td style="padding: 8px;">9876543210</td>
+            <td style="padding: 8px;">Location One, Location Two, Location Three</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>You may also use a single <strong>location</strong> column with one location per row.</p>
+
+      <form method="post" enctype="multipart/form-data" style="margin-top: 20px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="submit-row">
+          <input type="submit" value="Upload Data" class="default">
+          <a href="{% url 'admin:index' %}" class="button cancel-link">Back to admin dashboard</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

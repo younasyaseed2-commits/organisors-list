@@ -1,0 +1,43 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Manual Upload{% endblock %}
+{% block page_title %}Manual Upload{% endblock %}
+{% block page_subtitle %}Add one organizer and many locations. District can be auto-detected from place names.{% endblock %}
+
+{% block content %}
+  <div class="panel panel-pad">
+    <form method="post">
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold" for="{{ form.district.id_for_label }}">District</label>
+          {{ form.district }}
+          <div class="form-text">Optional. Leave empty to auto-update district from the place name when known.</div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold" for="{{ form.organizer.id_for_label }}">Organizer</label>
+          {{ form.organizer }}
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold" for="{{ form.phone_number.id_for_label }}">Phone Number</label>
+          {{ form.phone_number }}
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold" for="{{ form.locations.id_for_label }}">Locations</label>
+          {{ form.locations }}
+          {% for error in form.locations.errors %}
+            <div class="text-danger small mt-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold" for="{{ form.aliases.id_for_label }}">Malayalam / alternate names</label>
+          {{ form.aliases }}
+          <div class="form-text">Optional. Use the same order as locations. Example: Olavattur location can have alias ഒളവട്ടൂർ.</div>
+        </div>
+      </div>
+      <button class="btn btn-accent btn-lg mt-4" type="submit">
+        <i class="bi bi-save me-1"></i> Save Organizer Data
+      </button>
+    </form>
+  </div>
+{% endblock %}
