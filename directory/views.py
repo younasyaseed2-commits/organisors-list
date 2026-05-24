@@ -5,8 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
 from django.db.models import Q
-from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.http import JsonResponse, HttpResponseForbidden
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.http import require_GET
 
 from .forms import ReceptionRegistrationForm
@@ -87,12 +87,12 @@ def search_locations(request):
     filters = Q()
     for term in terms:
         filters |= (
-            Q(name__icontains=term)
-            | Q(aliases__icontains=term)
-            | Q(district__name__icontains=term)
-            | Q(organizer__name__icontains=term)
-            | Q(organizer__phone_number__icontains=term)
-            | Q(organizer__district__name__icontains=term)
+                Q(name__icontains=term)
+                | Q(aliases__icontains=term)
+                | Q(district__name__icontains=term)
+                | Q(organizer__name__icontains=term)
+                | Q(organizer__phone_number__icontains=term)
+                | Q(organizer__district__name__icontains=term)
         )
 
     locations = (
@@ -148,12 +148,12 @@ def search_locations(request):
             location
             for location in candidates
             if (
-                location.name in close_values
-                or location.aliases in close_values
-                or location.organizer.name in close_values
-                or (location.district and location.district.name in close_values)
-                or location.organizer.district.name in close_values
-                or best_score(location) >= 0.55
+                    location.name in close_values
+                    or location.aliases in close_values
+                    or location.organizer.name in close_values
+                    or (location.district and location.district.name in close_values)
+                    or location.organizer.district.name in close_values
+                    or best_score(location) >= 0.55
             )
         ]
         fuzzy_matches.sort(key=best_score, reverse=True)
@@ -174,3 +174,60 @@ def search_locations(request):
     ]
 
     return JsonResponse({"results": results})
+
+
+# 📝 അഡ്മിന് മാത്രം എഡിറ്റ് ചെയ്യാനുള്ള വ്യൂ (പേര്, ഫോൺ, ഡിസ്ട്രിക്റ്റ്, പ്ലേസ് എല്ലാം)
+@login_required
+def edit_organizer(request, pk):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("നിങ്ങൾക്ക് ഇതിനുള്ള അധികാരമില്ല!")
+
+    organizer = get_object_or_404(Organizer, pk=pk)
+    districts = District.objects.all()
+    location = organizer.locations.first()
+
+    if request.method == 'POST':
+        organizer.name = request.POST.get('name')
+        organizer.phone_number = request.POST.get('phone')
+
+        district_id = request.POST.get('district')
+        if district_id:
+            organizer.district_id = district_id
+
+        organizer.save()
+
+        place_name = request.POST.get('place', '').strip()
+        if place_name:
+            if location:
+                location.name = place_name
+                location.district_id = district_id
+                location.save()
+            else:
+                Location.objects.create(
+                    organizer=organizer,
+                    name=place_name,
+                    district_id=district_id
+                )
+
+        messages.success(request, "Organizer, District, and Place updated successfully.")
+        return redirect('custom_admin_dashboard')
+
+    context = {
+        'organizer': organizer,
+        'districts': districts,
+        'location': location,
+    }
+    return render(request, 'dashboard/edit_organizer.html', context)
+
+
+# ❌ അഡ്മിന് മാത്രം ഓർഗനൈസറെ ഡിലീറ്റ് ചെയ്യാനുള്ള വ്യൂ
+@login_required
+def delete_organizer(request, pk):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("നിങ്ങൾക്ക് ഇതിനുള്ള അധികാരമില്ല!")
+
+    organizer = get_object_or_404(Organizer, pk=pk)
+    if request.method == 'POST':
+        organizer.delete()
+        messages.success(request, "Organizer deleted successfully.")
+    return redirect('custom_admin_dashboard')

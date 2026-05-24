@@ -65,6 +65,7 @@ class OrganizerAdmin(admin.ModelAdmin):
     )
     list_display = ("name", "phone_number", "district", "location_count")
     list_filter = ("district",)
+    list_display_links = ('name',)  # അഡ്മിൻ പാനലിൽ പേരിൽ ക്ലിക്ക് ചെയ്താൽ എഡിറ്റ് ചെയ്യാം
     search_fields = ("name", "phone_number", "district__name", "locations__name")
     inlines = [LocationInline]
 

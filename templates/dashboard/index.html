@@ -35,9 +35,25 @@
         {% if recent_organizers %}
           <div class="list-group list-group-flush">
             {% for organizer in recent_organizers %}
-              <div class="list-group-item px-0">
-                <strong>{{ organizer.name }}</strong>
-                <div class="text-muted small">{{ organizer.phone_number }} · {{ organizer.district.name }}</div>
+              <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                <div>
+                  <strong>{{ organizer.name }}</strong>
+                  <div class="text-muted small">{{ organizer.phone_number }} · {{ organizer.district.name }}</div>
+                </div>
+                <!-- അഡ്മിന് വേണ്ടിയുള്ള പുതിയ ബട്ടണുകൾ ഇവിടെ ചേർത്തു -->
+                <div class="d-flex gap-1">
+                  <!-- Edit Button -->
+                  <a href="{% url 'directory:edit_organizer' organizer.pk %}" class="btn btn-sm btn-outline-primary" title="Edit">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <!-- Delete Button -->
+                  <form action="{% url 'directory:delete_organizer' organizer.pk %}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this organizer?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </form>
+                </div>
               </div>
             {% endfor %}
           </div>

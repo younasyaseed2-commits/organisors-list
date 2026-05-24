@@ -1,0 +1,50 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Edit Organizer{% endblock %}
+{% block page_title %}Edit Organizer{% endblock %}
+
+{% block content %}
+<div class="panel panel-pad" style="max-width: 600px;">
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- 1. Name Input -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Name</label>
+            <input type="text" name="name" class="form-control" value="{{ organizer.name }}" required>
+        </div>
+
+        <!-- 2. Phone Number Input -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Phone Number</label>
+            <input type="text" name="phone" class="form-control" value="{{ organizer.phone_number }}" required>
+        </div>
+
+        <!-- 3. District Dropdown -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">District</label>
+            <select name="district" class="form-select" required>
+                <option value="">Select District</option>
+                {% for district in districts %}
+                    <option value="{{ district.id }}" {% if organizer.district.id == district.id %}selected{% endif %}>
+                        {{ district.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- 4. Place (Location) Input -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Place / Location</label>
+            <input type="text" name="place" class="form-control" value="{{ location.name }}" placeholder="Enter main place name" required>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-accent">
+                <i class="bi bi-check-circle me-1"></i> Update Everything
+            </button>
+            <a href="{% url 'custom_admin_dashboard' %}" class="btn btn-outline-dark ms-2">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -10,4 +10,6 @@ urlpatterns = [
     path("logout/", views.reception_logout, name="logout"),
     path("", views.home, name="home"),
     path("ajax/search-locations/", views.search_locations, name="search_locations"),
+path('organizer/edit/<int:pk>/', views.edit_organizer, name='edit_organizer'),
+path('organizer/delete/<int:pk>/', views.delete_organizer, name='delete_organizer'),
 ]
