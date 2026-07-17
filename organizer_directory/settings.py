@@ -106,8 +106,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "directory:login"
 LOGIN_REDIRECT_URL = "directory:home"
 LOGOUT_REDIRECT_URL = "directory:login"
-
-# സെർവറിൽ സൈറ്റ് HTTPS വഴി മാത്രമേ റൺ ചെയ്യാവൂ എന്ന് നിർബന്ധമാക്കാൻ
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# Render സെർവറിൽ മാത്രം HTTPS നിർബന്ധമാക്കുക, ലോക്കൽ കമ്പ്യൂട്ടറിൽ (DEBUG=True) ഇത് ഒഴിവാക്കുക
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+else:
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
